@@ -33,7 +33,7 @@ try: #Intenta hacer esto
 
     with sd.Stream(
         device = (1, 3), #Se eligen dispositivos (Entrada, Salida)
-        blocksize = 0, #0 es que la tarjeta de sonido decide el mejor tamaño
+        blocksize = 11025, #0 es que la tarjeta de sonido decide el mejor tamaño
         samplerate = 44100, #Frecuencia de Muestreo
         channels = 1, #Canales
         dtype = np.int16, #Tipo de dato (Profundidad de bits)
