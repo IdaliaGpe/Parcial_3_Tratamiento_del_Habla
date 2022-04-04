@@ -3,6 +3,8 @@ from unittest.util import _count_diff_hashable
 import sounddevice as sd
 import numpy as np
 
+periodo_muestreo = 1.0 / 441000
+
 #print(sd.query_devices())
 #1 entrada
 #3 salida
@@ -15,8 +17,17 @@ import numpy as np
 #time:   El tiempo que se lleva haciendo el Stream
 #status: Si ha habido algun error
 def callback_stream(indata, outdata, frames, time, status):
+
+    global periodo_muestreo
+
+    data = indata[:, 0]
+    transformada = np.fft.rfft(indata)
+    frecuencias = np.fft.rfftfreq(frames, periodo_muestreo)
+
+    print(data.shape)
+    #print("Frecuencia Fundamental: ", 
+    #    frecuencias[np.argmax(np.abs(transformada))])
     #outdata[:] = indata
-    return
 
 try: #Intenta hacer esto
 
