@@ -3,7 +3,7 @@ from unittest.util import _count_diff_hashable
 import sounddevice as sd
 import numpy as np
 
-print(sd.query_devices())
+#print(sd.query_devices())
 #1 entrada
 #3 salida
 
@@ -15,6 +15,7 @@ print(sd.query_devices())
 #time:   El tiempo que se lleva haciendo el Stream
 #status: Si ha habido algun error
 def callback_stream(indata, outdata, frames, time, status):
+    #outdata[:] = indata
     return
 
 try: #Intenta hacer esto
