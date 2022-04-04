@@ -21,12 +21,12 @@ def callback_stream(indata, outdata, frames, time, status):
     global periodo_muestreo
 
     data = indata[:, 0]
-    transformada = np.fft.rfft(indata)
-    frecuencias = np.fft.rfftfreq(frames, periodo_muestreo)
+    transformada = np.fft.rfft(data)
+    frecuencias = np.fft.rfftfreq(len(data), periodo_muestreo)
 
-    print(data.shape)
-    #print("Frecuencia Fundamental: ", 
-    #    frecuencias[np.argmax(np.abs(transformada))])
+    #print(data.shape)
+    print("Frecuencia Fundamental: ", 
+        frecuencias[np.argmax(np.abs(transformada))])
     #outdata[:] = indata
 
 try: #Intenta hacer esto
