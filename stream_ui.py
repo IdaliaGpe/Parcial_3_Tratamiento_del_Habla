@@ -1,10 +1,13 @@
 import tkinter as tk
 import sounddevice as sd
 import numpy as np
+
 from threading import Thread, Event
 
 class StreamThread(Thread):
+
     def __init__(self):
+
         super().__init__()
         self.dispositivo_input = 1
         self.dispositivo_output = 3
@@ -13,15 +16,35 @@ class StreamThread(Thread):
         self.tipo_dato = np.int16
         self.latencia = "high"
         self.frecuencia_muestreo = 44100
-    
+        self.periodo_muestreo = 1.0 / 441000
+
     def callback_stream(self, indata, outdata, frames, time, status):
+
         global app
+
         app.etiqueta_valor_estado["text"] = "Grabando"
+        #Obtener la frecuencia fundamental
+        #Actualizar el texto de la etiqueta_valor_ff
+        #para que muestre la frecuencua fundamental
+
+        data = indata[:, 0]
+        transformada = np.fft.rfft(data)
+        frecuencias = np.fft.rfftfreq(len(data), self.periodo_muestreo)
+
+        #print(data.shape)
+        print("Frecuencia Fundamental: ", 
+            frecuencias[np.argmax(np.abs(transformada))])
+
+        app.etiqueta_valor_ff["text"] = (frecuencias[np.argmax(np.abs(transformada))])
+
         return
 
     def run(self):
+
         try:
+
             self.event = Event()
+
             with sd.Stream(
                 device = (self.dispositivo_input, self.dispositivo_output),
                 blocksize = self.tamano_bloque,
@@ -64,9 +87,16 @@ class App(tk.Tk):
         self.etiqueta_valor_estado = tk.Label(text = "- ")
         self.etiqueta_valor_estado.grid(column = 1, row = 1)
 
+        etiqueta_frecuencia_fundamental = tk.Label(text = "Frecuencia Fundamental: ")
+        etiqueta_frecuencia_fundamental.grid(column = 0, row = 2)
+
+        self.etiqueta_valor_ff = tk.Label(text = '-')
+        self.etiqueta_valor_ff.grid(column = 1, row = 2)
+
         self.stream_thread = StreamThread()
     
     def click_boton_detener(self):
+
         if self.stream_thread.is_alive():
             self.etiqueta_valor_estado["text"] = "Grabación Detenida" 
             self.stream_thread.stream.abort()
